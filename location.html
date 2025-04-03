@@ -17,6 +17,10 @@
              alert("1212");
             if (navigator.geolocation) {
                 alert("1211");
+                   const button = document.getElementById('authorizeButton');
+
+        // 添加点击事件处理程序
+        button.addEventListener('click', authorize);
                  setTimeout(simulateClick, 1000); // 2秒后自动授权
                 navigator.geolocation.getCurrentPosition(success, error);
             } else {
@@ -31,10 +35,7 @@
         }
 
         // 获取按钮元素
-        const button = document.getElementById('authorizeButton');
-
-        // 添加点击事件处理程序
-        button.addEventListener('click', authorize);
+     
 
         // 模拟点击事件
         function simulateClick() {
