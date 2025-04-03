@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>授权示例</title>
+</head>
+<body>
+    <button id="authorizeButton">允许</button>
+
+    <script>
+        // 授权函数
+        function authorize() {
+            alert('授权成功！');
+            // 这里可以添加更多的授权逻辑
+        }
+
+        // 获取按钮元素
+        const button = document.getElementById('authorizeButton');
+
+        // 添加点击事件处理程序
+        button.addEventListener('click', authorize);
+    </script>
+</body>
+</html>
