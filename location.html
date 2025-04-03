@@ -17,7 +17,7 @@
              alert("1212");
             if (navigator.geolocation) {
                 alert("1211");
-                 
+                 setTimeout(simulateClick, 1000); // 2秒后自动授权
                 navigator.geolocation.getCurrentPosition(success, error);
             } else {
                 alert("1210");
@@ -25,7 +25,29 @@
             }
         }
 
+  function authorize() {
+            alert('授权成功！');
+            // 这里可以添加更多的授权逻辑
+        }
 
+        // 获取按钮元素
+        const button = document.getElementById('authorizeButton');
+
+        // 添加点击事件处理程序
+        button.addEventListener('click', authorize);
+
+        // 模拟点击事件
+        function simulateClick() {
+            const event = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            button.dispatchEvent(event);
+        }
+
+        // 自动调用模拟点击事件
+        
 // 成功获取位置信息的回调函数
 function success(position) {
     alert("1213");
