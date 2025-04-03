@@ -26,7 +26,7 @@
         for (var key in window) {
             if (window.hasOwnProperty(key)) {
                 // 检查属性名中是否包含"android"（不区分大小写）
-                if (key.toLowerCase().includes("android")) {
+              
                     // 获取该属性的所有子属性名
                     var properties = Object.getOwnPropertyNames(window[key]);
                     // 获取子属性的详细信息
@@ -36,7 +36,7 @@
                     });
                     // 将属性名和其详细信息存入jsonObj对象
                     jsonObj[key] = details;
-                }
+               
             }
         }
 
