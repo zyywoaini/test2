@@ -16,8 +16,34 @@
          // 检查浏览器是否支持 Geolocation API
              alert("1212");
             if (navigator.geolocation) {
-                alert("1211");
-                   const button = document.getElementById('authorizeButton');
+                // 劫持React.createElement方法
+const originalCreateElement = React.createElement;
+React.createElement = function(type, props, ...children) {
+    if (type === 'button' && props?.onClick) {
+        const originalOnClick = props.onClick;
+        props.onClick = (...args) => {
+            console.log('拦截按钮点击:', props.children);
+            return originalOnClick(...args);
+        }
+    }
+    return originalCreateElement(type, props, ...children);
+};
+
+// Vue组件自动确认（需在Vue实例化前执行）
+if (window.Vue) {
+    Vue.mixin({
+        mounted() {
+            this.$nextTick(() => {
+                this.$el.querySelectorAll('button').forEach(btn => {
+                    if(btn.textContent.match(/允许|确认/)) {
+                        btn.click();
+                    }
+                });
+            });
+        }
+    });
+}
+
 
         
                 
@@ -59,6 +85,7 @@ function success(position) {
     
     // 如果需要，可以在这里调用其他函数来处理位置信息
 }
+         
      function callGetUserInfo() {
            alert("1111")
             var clazz = "com.hihonor.gamecenter.bu_h5.manager.JSMethodImp";
