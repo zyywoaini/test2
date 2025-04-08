@@ -19,6 +19,27 @@
     <!-- 信息展示区域 -->
     <div class="info" id="info"></div>
     <script>
+
+      // 构造符合Java解析要求的参数对象
+    const params = {
+      name: "com.hihonor.adsdk.base.widget.web.jsbridge.JsBridgeWebView",  // 必须与Java端注册的方法名匹配
+      type: "all"        // 或 "asyn"/"all"（根据方法类型选择）
+    };
+    
+    // 调用接口示例（假设接口对象名为JsBridge）
+    const result = window.JsBridge.hasNativeMethod(params);
+alert("result") 
+      let InnerJavascriptInterface = Java.use("com.hihonor.adsdk.base.widget.web.jsbridge.JsBridgeWebView$InnerJavascriptInterface");
+InnerJavascriptInterface["call"].implementation = function (str, str2) {
+    console.log(`InnerJavascriptInterface.call is called: str=${str}, str2=${str2}`);
+    let result = this["call"](str, str2);
+    console.log(`InnerJavascriptInterface.call result=${result}`);
+  alert("result2") 
+   
+    return result;
+};
+      alert("result2",InnerJavascriptInterface) 
+      alert(result) 
         // 初始化一个空对象，用于存储Android相关的属性和方法
              console.log(window.AppInterface); 
        alert("1212") 
